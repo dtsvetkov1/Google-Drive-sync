@@ -1,17 +1,16 @@
 ![PICTURE HERE!](./google-drive-logo-logo.png)
-
 # Google-Drive-sync
 A Python script to automatically syncronize your Google Drive content with local storage files.
 
 
-# What iit can do (for now) (Features)
+# What it can do (for now)
 - Upload folder and all it's content from local storage to Google Drive
--  Syncronise (Check) changes on local storage with (same) Google Drive folder
--  Syncronise (Check) changes on Drive with it's local storage instance
+-  Check and syncronise changes on local storage with (same) Google Drive folder
+-  Check and syncronise changes on Drive with it's local storage instance
 
 So, it's two-way syncronisation of selected folders, which you can run at any time (in any 'direction') you want (isn't this a dream, yeah?).
 
-# (Setup) Installation and autorun 
+# Setup autorun 
 
 Edit client_secrets_sample.json and add your Google API client id and client secret (If you don't have one, get it [here]() and save as *client-secret.json*).
 
@@ -43,10 +42,6 @@ All of these items are extremely important, because if you wont have at list one
 If you have any questions how to use this stuff, offerings or simply want to contact me, please write me any time  on [Telegram]() or [email]().
 
 
-[composer.json]: ./composer.json
+[here]: ./composer.json
 [Composer]: http://getcomposer.org/
-[исходные коды]: https://github.com/Bashka/bricks_cli_routing/releases
-[PHPUnit]: http://phpunit.de/
-[обсуждение]: https://github.com/Bashka/bricks_cli_routing/issues
-[Doxygen]: http://www.stack.nl/~dimitri/doxygen/index.html
 
