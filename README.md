@@ -25,9 +25,9 @@ To run this amazing project, you will need:
 
 - Python 3 or higher installed
 - Google API Python library. To install it simply run
-  
-    sudo pip install --upgrade google-api-python-client
-
+```
+   sudo pip install --upgrade google-api-python-client
+```
 (or see this [installation page]() for more information)
 
 - Google Account
