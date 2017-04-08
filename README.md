@@ -1,4 +1,4 @@
-PICTURE HERE!
+![PICTURE HERE!](./google-drive-logo-logo.png)
 
 # Google-Drive-sync
 A Python script to automatically syncronize your Google Drive content with local storage files.
