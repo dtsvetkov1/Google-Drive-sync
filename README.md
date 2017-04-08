@@ -10,14 +10,12 @@ A Python script to automatically syncronize your Google Drive content with local
 
 So, it's two-way syncronisation of selected folders, which you can run at any time (in any 'direction') you want (isn't this a dream, yeah?).
 
-# Setup autorun 
-
-Edit client_secrets_sample.json and add your Google API client id and client secret (If you don't have one, get it [here]() and save as *client-secret.json*).
+# Setup and autorun 
 
 1) Get your .json client secret config file [here]() and put it in working directiory (dont forget to save it as *client-secret.json*)
-1) In *initial_upload.py* file sript change gloval variables FULL_PATH and DIR_NAME to your's full folder path and folder's name which you want to upload/synconise, respectively.
-1) First time you run *drive_sync.py* or *download_from_drive.py*, it will open browser/new tab so you can authenticate the script.
-1) Run *drive_sync.py* script, if you want to apply changes mage on local storage to specific Google Drive folder, and run *download_from_drive.py* when you want to apply changes from that Google Drive folder to your local storage.
+1) In *initial_upload.py* file sript change gloval variables FULL_PATH and DIR_NAME to your's full folder path and folder's name, which you want to upload/synconise, respectively.
+1) First time you run *drive_sync.py* or *download_from_drive.py*, it will open browser/new tab, and you will need to authenticate the script (or if ti doesn't redirect you, copy link and do authentification manually).
+1) Run *drive_sync.py* script, if you want to apply changes mage on local storage to specific Google Drive folder, and run *download_from_drive.py* if you want to apply changes from that Google Drive folder to your local storage.
 1) (Optional) put script that you need to cron or any other task planner that yoyu use.
 1) Enjoy how simple it is!
 
