@@ -37,7 +37,7 @@ All of these items are extremely important because if you won't have at least on
 
 ## Support
 
-If you have any questions how to use this stuff, offerings or simply want to contact me, please write me anytime on Telegram [@I_love_cats1]() or [email](<danilatsvet@gmail.com>).
+If you have any questions how to use this stuff, offerings or simply want to contact me, please write me anytime on Telegram [@I_love_cats1]() or email <danilatsvet@gmail.com>.
 
 
 [installation page]: https://developers.google.com/api-client-library/python/start/installation
