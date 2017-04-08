@@ -12,7 +12,7 @@ So, it's two-way synchronization of selected folders, which you can run at any t
 # Setup and autorun 
 
 1) Turn on Google Drive API [here]() (if you have any troubles, check [Python Quickstart guide]()).
-1) Get your .json client secret config file in [Googgle API Projects page]() and put it in working directory (don't forget to save it as *client-secret.json*)
+1) Get your .json client secret config file in [Google API Projects page]() and put it in working directory (don't forget to save it as *client-secret.json*)
 1) In *initial_upload.py* file script change global variables FULL_PATH and DIR_NAME to your's full folder path and folder's name, which you want to upload/synchronize, respectively.
 1) First time you run *drive_sync.py* or *download_from_drive.py*, it will open browser/new tab, and you will need to authenticate the script (or if it doesn't redirect you, copy the link and do authentification manually).
 1) Run *drive_sync.py* script, if you want to apply changes made on local storage to specific Google Drive folder, and run *download_from_drive.py* if you want to apply changes from that Google Drive folder to your local storage.
@@ -44,4 +44,4 @@ If you have any questions how to use this stuff, offerings or simply want to con
 [I_love_cats1]: https://web.telegram.org/#/im?p=@I_love_cats1
 [here]: https://console.developers.google.com/flows/enableapi?apiid=drive
 [Python Quickstart guide]: https://developers.google.com/drive/v3/web/quickstart/python
-[Googgle API Prijects page]: https://console.developers.google.com/iam-admin/projects
+[Google API Prijects page]: https://console.developers.google.com/iam-admin/projects
