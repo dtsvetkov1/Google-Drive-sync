@@ -41,7 +41,7 @@ If you have any questions how to use this stuff, offerings or simply want to con
 
 
 [installation page]: https://developers.google.com/api-client-library/python/start/installation
-[I_love_cats1]: https://web.telegram.org/#/im?p=@I_love_cats1
+[@I_love_cats1]: https://web.telegram.org/#/im?p=@I_love_cats1
 [here]: https://console.developers.google.com/flows/enableapi?apiid=drive
 [Python Quickstart guide]: https://developers.google.com/drive/v3/web/quickstart/python
 [Google API Prijects page]: https://console.developers.google.com/iam-admin/projects
