@@ -2,7 +2,6 @@
 # Google-Drive-sync
 A Python script to automatically syncronize your Google Drive content with local storage files.
 
-
 # What it can do (for now)
 - Upload folder and all it's content from local storage to Google Drive
 -  Check and syncronise changes on local storage with (same) Google Drive folder
@@ -27,13 +26,14 @@ To run this amasing stuff, you will need:
 - Python 3 or higher installed
 - Google API Python library. To install it simply run
   
-  sudo pip install --upgrade google-api-python-client
+    sudo pip install --upgrade google-api-python-client
+
 (or see [here]() for more information)
 
 - Google Account
 - Internet connection
 
-All of these items are extremely important, because if you wont have at list one of then, nothing will work :(
+All of these items are extremely important, because if you wont have at list one of then, nothing will work :('
 
 ## Support
 
