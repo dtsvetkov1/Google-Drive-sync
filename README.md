@@ -9,7 +9,7 @@ A Python script to automatically synchronize your Google Drive content with loca
 
 So, it's two-way synchronization of selected folders, which you can run at any time (in any 'direction') you want (isn't this a dream, yeah?).
 
-# Setup and autorun 
+# Initial setup 
 
 1) Turn on Google Drive API [here] (if you have any troubles, check [Python Quickstart guide]).
 1) Get your .json client secret config file in [Google API Projects page] and put it in working directory (don't forget to save it as *client-secret.json*)
@@ -34,6 +34,13 @@ To run this amazing project, you will need:
 - Internet connection
 
 All of these items are extremely important because if you won't have at least one of then, nothing will work :('
+
+# TO-DO and known problems/issues/features:
+- Only full path to folder allowed now (you can't put your script near folder and use it's relative path).
+- It's only one direction per time. So if you have changes on both local storage and Google Drive, you may lose part of your data. Be careful with that!
+- Sync scripts have troubles with handling extension-less non-googledocs files. Be careful here.
+- Epic things with Google Docs files. Initially, I didn't wanna even worry about that, because personally don't use them in my syncroised forlders. So finally I came up with this "duct tape" solution - when you download/update stuff from Drive to local storage, and it's 'google docs' file on Drive, it will add .extension to it's name (if need) so files will be the same on next run. Pay attention at this detail, if it's really important for you, it can be fixed relatively easy (for example by adding some external dict near scripts that will remember about correlations between Drive doc and its local storage exported copy, or something like that). Maybe someday this will be fixed.
+- Apart from Google Docs, everything else works well.
 
 ## Support
 
