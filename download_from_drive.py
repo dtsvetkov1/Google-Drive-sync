@@ -18,7 +18,7 @@ from oauth2client import tools
 from oauth2client.file import Storage
 from apiclient.http import MediaIoBaseDownload
 
-import initial_upload
+# import initial_upload
 
 # If modifying these scopes, delete your previously saved credentials
 # at ~/.credentials/drive-python-quickstart.json
@@ -26,8 +26,13 @@ SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly',
           'https://www.googleapis.com/auth/drive.file',
           'https://www.googleapis.com/auth/drive']
 CLIENT_SECRET_FILE = 'client_secret.json'
-APPLICATION_NAME = 'Drive Sync application'
+APPLICATION_NAME = 'Drive Sync'
 
+# Declare full path to folder and folder name
+FULL_PATH = r'PUT YOUR FULL FOLDER PATH HERE'
+DIR_NAME = 'PUT YOUR FOLDER NAME HERE'
+# Or simply
+# DIR_NAME = FULL_PATH.split('/')[-1]
 
 # Sample (reference) map of Google Docs MIME types to possible exports
 # (for more information check about().get() method with exportFormats field)
@@ -46,10 +51,7 @@ GOOGLE_MIME_TYPES = {
      '.pptx']
     # 'application/vnd.oasis.opendocument.presentation'
 }
-
-#Other google mimetypes in case if you need it 
 # 'application/vnd.google-apps.drawing': 'application/x-msmetafile'
-# 'application/vnd.google-apps.script': 'application/vnd.google-apps.script+json'
 # 'application/vnd.google-apps.folder': '',
 # 'application/vnd.google-apps.form': 'application/pdf',
 # 'application/vnd.google-apps.fusiontable': '',
@@ -62,6 +64,79 @@ GOOGLE_MIME_TYPES = {
 # 'application/vnd.google-apps.audio': '',
 # 'application/vnd.google-apps.drive-sdk': ''
 # 'application/octet-stream': 'text/plain'
+
+def folder_upload(service):
+    '''Uploads folder and all it's content (if it doesnt exists)
+    in root folder.
+
+    Args:
+        items: List of folders in root path on Google Drive.
+        service: Google Drive service instance.
+
+    Returns:
+        Dictionary, where keys are folder's names
+        and values are id's of these folders.
+    '''
+
+    parents_id = {}
+
+    for root, _, files in os.walk(FULL_PATH, topdown=True):
+        last_dir = root.split('/')[-1]
+        pre_last_dir = root.split('/')[-2]
+        if pre_last_dir not in parents_id.keys():
+            pre_last_dir = []
+        else:
+            pre_last_dir = parents_id[pre_last_dir]
+
+        folder_metadata = {'name': last_dir,
+                           'parents': [pre_last_dir],
+                           'mimeType': 'application/vnd.google-apps.folder'}
+        create_folder = service.files().create(body=folder_metadata,
+                                               fields='id').execute()
+        folder_id = create_folder.get('id', [])
+
+        for name in files:
+            file_metadata = {'name': name, 'parents': [folder_id]}
+            media = MediaFileUpload(
+                os.path.join(root, name),
+                mimetype=mimetypes.MimeTypes().guess_type(name)[0])
+            service.files().create(body=file_metadata,
+                                   media_body=media,
+                                   fields='id').execute()
+
+        parents_id[last_dir] = folder_id
+
+    return parents_id
+
+
+def check_upload(service):
+    """Checks if folder is already uploaded,
+    and if it's not, uploads it.
+
+    Args:
+        service: Google Drive service instance.
+
+    Returns:
+        ID of uploaded folder, full path to this folder on computer.
+
+    """
+
+    results = service.files().list(
+        pageSize=100,
+        q="'root' in parents and trashed != True and \
+        mimeType='application/vnd.google-apps.folder'").execute()
+
+    items = results.get('files', [])
+
+    # Check if folder exists, and then create it or get this folder's id.
+    if DIR_NAME in [item['name'] for item in items]:
+        folder_id = [item['id']for item in items
+                     if item['name'] == DIR_NAME][0]
+    else:
+        parents_id = folder_upload(service)
+        folder_id = parents_id[DIR_NAME]
+
+    return folder_id, FULL_PATH
 
 
 def get_credentials():
@@ -85,7 +160,10 @@ def get_credentials():
     if not credentials or credentials.invalid:
         flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
         flow.user_agent = APPLICATION_NAME
+        # if flags:
         credentials = tools.run_flow(flow, store, flags=None)
+        # else:  # Needed only for compatibility with Python 2.6
+        # credentials = tools.run(flow, store)
         print('Storing credentials to ', credential_path)
     return credentials
 
@@ -155,6 +233,7 @@ def download_file_from_gdrive(file_path, drive_file, service):
             service.files().update(fileId=file_id,
                                    body={'name': file_name}).execute()
 
+
         request = service.files().export(
             fileId=file_id,
             mimeType=(GOOGLE_MIME_TYPES[drive_file['mimeType']])[0]).execute()
@@ -190,10 +269,14 @@ def main():
     service = discovery.build('drive', 'v3', http=http)
 
     # Get id of Google Drive folder and it's path (from other script)
-    folder_id, full_path = initial_upload.check_upload(service)
+    # folder_id, full_path = initial_upload.check_upload(service)
+    folder_id, full_path = check_upload(service)
     folder_name = full_path.split(os.path.sep)[-1]
     tree_list, root, parents_id = [], '', {}
 
+    # About_drive = service.about().get(
+    # fields='importFormats, exportFormats').execute()
+    # print(About_drive)
     parents_id[folder_name] = folder_id
     get_tree(folder_name, tree_list, root, parents_id, service)
     os_tree_list = []
@@ -234,6 +317,7 @@ def main():
                  if f['mimeType'] != 'application/vnd.google-apps.folder']
 
         for drive_file in files:
+            # file_id = f['id']
             download_file_from_gdrive(variable, drive_file, service)
 
     # Check and refresh files in existing folders
@@ -262,6 +346,7 @@ def main():
         for drive_file in refresh_files:
             file_dir = os.path.join(variable, drive_file['name'])
             file_time = os.path.getmtime(file_dir)
+            # mtime = drive_file['modifiedTime']
             mtime = datetime.datetime.strptime(drive_file['modifiedTime'][:-2],
                                                "%Y-%m-%dT%H:%M:%S.%f")
             drive_time = time.mktime(mtime.timetuple())
@@ -275,7 +360,7 @@ def main():
             else:
                 drive_md5 = None
 
-            if file_time < drive_time or (drive_md5 != os_file_md5):
+            if (file_time < drive_time) or (drive_md5 != os_file_md5):
                 os.remove(os.path.join(variable, drive_file['name']))
                 download_file_from_gdrive(variable, drive_file, service)
 

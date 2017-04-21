@@ -13,8 +13,8 @@ So, it's two-way synchronization of selected folders, which you can run at any t
 
 1) Turn on Google Drive API [here] (if you have any troubles, check [Python Quickstart guide]).
 1) Get your .json client secret config file in [Google API Projects page] and put it in working directory (don't forget to save it as *client-secret.json*)
-1) In *initial_upload.py* file script change global variables FULL_PATH and DIR_NAME to your's full folder path and folder's name, which you want to upload/synchronize, respectively.
-1) First time you run *drive_sync.py* or *download_from_drive.py*, it will open browser/new tab, and you will need to authenticate the script (or if it doesn't redirect you, copy the link and do authentification manually).
+1) In *upload_to_drive.py* and *download_from_drive.py* file scripts change global variables FULL_PATH and DIR_NAME to your's full folder path and folder's name, which you want to upload/download/synchronize, respectively.
+1) First time you run *upload_to_drive.py* or *download_from_drive.py*, it will open browser/new tab, and you will need to authenticate the script (or if it doesn't redirect you, copy the link and do authentification manually).
 1) Run *drive_sync.py* script, if you want to apply changes made on local storage to specific Google Drive folder, and run *download_from_drive.py* if you want to apply changes from that Google Drive folder to your local storage.
 1) (Optional) put script that you need to cron or any other task planner that you use.
 1) Enjoy how simple it is!
@@ -39,8 +39,8 @@ All of these items are extremely important because if you won't have at least on
 - Only full path to folder allowed now (you can't put your script near folder and use it's relative path).
 - It's only one direction per time. So if you have changes on both local storage and Google Drive, you may lose part of your data. Be careful with that!
 - Sync scripts have troubles with handling extension-less non-googledocs files. Be careful here.
-- Epic things with Google Docs files. Initially, I didn't wanna even worry about that, because personally don't use them in my syncroised forlders. So finally I came up with this "duct tape" solution - when you download/update stuff from Drive to local storage, and it's 'google docs' file on Drive, it will add .extension to it's name (if need) so files will be the same on next run. Pay attention at this detail, if it's really important for you, it can be fixed relatively easy (for example by adding some external dict near scripts that will remember about correlations between Drive doc and its local storage exported copy, or something like that). Maybe someday this will be fixed.
-- Apart from Google Docs, everything else works well.
+- Epic things with Google Docs files. Initially, I didn't wanna even worry about that, because personally don't use them in my syncroised forlders. So finally I came up with this "duct tape" solution - when you download/update stuff from Drive to local storage, and it's 'google docs' file on Drive, it will add .extension to it's name (if need) so files will be the same on next run (for example .docx for Word files). Pay attention at this detail, if it's really important for you, it can be fixed relatively easy (for example by adding some external dictionary near scripts that will remember about correlations between Drive doc and its local storage exported copy, or something like that). Maybe someday this will be fixed.
+- There is no error/exception handling for now.
 
 ## Support
 

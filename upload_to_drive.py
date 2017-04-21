@@ -12,11 +12,12 @@ import httplib2
 from apiclient import discovery
 from oauth2client import client
 from oauth2client import tools
+# from oauth2client.tools import run
 
 from oauth2client.file import Storage
 from apiclient.http import MediaFileUpload
 # Import our folder uploading script
-import initial_upload
+# import initial_upload
 
 # If modifying these scopes, delete your previously saved credentials
 # at ~/.credentials/drive-python-quickstart.json
@@ -24,7 +25,13 @@ SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly',
           'https://www.googleapis.com/auth/drive.file',
           'https://www.googleapis.com/auth/drive']
 CLIENT_SECRET_FILE = 'client_secret.json'
-APPLICATION_NAME = 'Drive Sync application'
+APPLICATION_NAME = 'Drive Sync'
+
+# Declare full path to folder and folder name
+FULL_PATH = r'PUT YOUR FULL FOLDER PATH HERE'
+DIR_NAME = 'PUT YOUR FOLDER NAME HERE'
+# Or simply
+# DIR_NAME = FULL_PATH.split('/')[-1]
 
 # Don't really need it here
 GOOGLE_MIME_TYPES = {
@@ -39,7 +46,6 @@ GOOGLE_MIME_TYPES = {
     # 'application/vnd.oasis.opendocument.presentation'
 }
 
-#Other google mimetypes in case if you need it 
 # 'application/vnd.google-apps.folder': '',
 # 'application/vnd.google-apps.form': 'application/pdf',
 # 'application/vnd.google-apps.fusiontable': '',
@@ -52,6 +58,82 @@ GOOGLE_MIME_TYPES = {
 # 'application/vnd.google-apps.audio': '',
 # 'application/vnd.google-apps.drive-sdk': ''
 # 'application/octet-stream': 'text/plain'
+
+
+def folder_upload(service):
+    '''Uploads folder and all it's content (if it doesnt exists)
+    in root folder.
+
+    Args:
+        items: List of folders in root path on Google Drive.
+        service: Google Drive service instance.
+
+    Returns:
+        Dictionary, where keys are folder's names
+        and values are id's of these folders.
+    '''
+
+    parents_id = {}
+
+    for root, _, files in os.walk(FULL_PATH, topdown=True):
+        last_dir = root.split('/')[-1]
+        pre_last_dir = root.split('/')[-2]
+        if pre_last_dir not in parents_id.keys():
+            pre_last_dir = []
+        else:
+            pre_last_dir = parents_id[pre_last_dir]
+
+        folder_metadata = {'name': last_dir,
+                           'parents': [pre_last_dir],
+                           'mimeType': 'application/vnd.google-apps.folder'}
+        create_folder = service.files().create(body=folder_metadata,
+                                               fields='id').execute()
+        folder_id = create_folder.get('id', [])
+
+        for name in files:
+            file_metadata = {'name': name, 'parents': [folder_id]}
+            media = MediaFileUpload(
+                os.path.join(root, name),
+                mimetype=mimetypes.MimeTypes().guess_type(name)[0])
+            service.files().create(body=file_metadata,
+                                   media_body=media,
+                                   fields='id').execute()
+
+        parents_id[last_dir] = folder_id
+
+    return parents_id
+
+
+def check_upload(service):
+    """Checks if folder is already uploaded,
+    and if it's not, uploads it.
+
+    Args:
+        service: Google Drive service instance.
+
+    Returns:
+        ID of uploaded folder, full path to this folder on computer.
+
+    """
+
+    results = service.files().list(
+        pageSize=100,
+        q="'root' in parents and trashed != True and \
+        mimeType='application/vnd.google-apps.folder'").execute()
+
+    items = results.get('files', [])
+
+    # Check if folder exists, and then create it or get this folder's id.
+    if DIR_NAME in [item['name'] for item in items]:
+        folder_id = [item['id']for item in items
+                     if item['name'] == DIR_NAME][0]
+    else:
+        parents_id = folder_upload(service)
+        folder_id = parents_id[DIR_NAME]
+
+    return folder_id, FULL_PATH
+
+
 
 
 def get_credentials():
@@ -75,7 +157,11 @@ def get_credentials():
     if not credentials or credentials.invalid:
         flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
         flow.user_agent = APPLICATION_NAME
+        # if flags:
         credentials = tools.run_flow(flow, store, flags=None)
+        # else:  # Needed only for compatibility with Python 2.6
+        # flags = None
+        # credentials = tools.run_flow(flow, store, flags)
         print('Storing credentials to ', credential_path)
     return credentials
 
@@ -141,7 +227,8 @@ def main():
     service = discovery.build('drive', 'v3', http=http)
 
     # Get id of Google Drive folder and it's path (from other script)
-    folder_id, full_path = initial_upload.check_upload(service)
+    # folder_id, full_path = initial_upload.check_upload(service)
+    folder_id, full_path = check_upload(service)
     folder_name = full_path.split(os.path.sep)[-1]
     tree_list = []
     root = ''
@@ -236,12 +323,19 @@ def main():
             mtime = datetime.datetime.strptime(
                 mtime[:-2], "%Y-%m-%dT%H:%M:%S.%f")
             drive_time = time.mktime(mtime.timetuple())
-
+            # print(drive_file['name'])
+            # if file['mimeType'] in GOOGLE_MIME_TYPES.keys():
+            # print(file['name'], file['mimeType'])
+            # print()
             os_file_md5 = hashlib.md5(open(file_dir, 'rb').read()).hexdigest()
             if 'md5Checksum' in drive_file.keys():
+                # print(1, file['md5Checksum'])
                 drive_md5 = drive_file['md5Checksum']
+                # print(2, os_file_md5)
             else:
+                # print('No hash')
                 drive_md5 = None
+                # print(drive_md5 != os_file_md5)
 
             if (file_time > drive_time) or (drive_md5 != os_file_md5):
                 file_id = [f['id'] for f in items
@@ -253,7 +347,9 @@ def main():
                 # file_mime = mimetypes.MimeTypes().guess_type(file_dir)[0]
                 file_metadata = {'name': drive_file['name'],
                                  'parents': [parents_id[last_dir]]}
+                # media_body = MediaFileUpload(file_dir, mimetype=filemime)
                 media_body = MediaFileUpload(file_dir, mimetype=file_mime)
+                # print('I am HERE, ', )
                 service.files().update(fileId=file_id,
                                        media_body=media_body,
                                        fields='id').execute()
