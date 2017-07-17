@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-"""Example cooment to make pylint stop giving me errors."""
+"""Example comment to make pylint stop giving me errors."""
 
 import datetime
 import hashlib
@@ -28,10 +28,8 @@ CLIENT_SECRET_FILE = 'client_secret.json'
 APPLICATION_NAME = 'Drive Sync'
 
 # Declare full path to folder and folder name
-FULL_PATH = r'PUT YOUR FULL FOLDER PATH HERE'
-DIR_NAME = 'PUT YOUR FOLDER NAME HERE'
-# Or simply
-# DIR_NAME = FULL_PATH.split('/')[-1]
+FULL_PATH = r'PUT YOUR FULL FOLDER PATH HERE'  # should be like r'C:\Users\ME\Desktop\'
+DIR_NAME = FULL_PATH.split('\\')[-1] #
 
 # Don't really need it here
 GOOGLE_MIME_TYPES = {
@@ -76,8 +74,8 @@ def folder_upload(service):
     parents_id = {}
 
     for root, _, files in os.walk(FULL_PATH, topdown=True):
-        last_dir = root.split('/')[-1]
-        pre_last_dir = root.split('/')[-2]
+        last_dir = root.split('\\')[-1]
+        pre_last_dir = root.split('\\')[-2]
         if pre_last_dir not in parents_id.keys():
             pre_last_dir = []
         else:
@@ -261,7 +259,7 @@ def main():
 
     # Here we upload new (abcent on Drive) folders
     for folder_dir in upload_folders:
-        var = os.path.join(full_path.split(os.path.sep)[0:-1]) + os.path.sep
+        var = (os.path.sep).join(full_path.split(os.path.sep)[0:-1]) + os.path.sep
         variable = var + folder_dir
         last_dir = folder_dir.split(os.path.sep)[-1]
         pre_last_dir = folder_dir.split(os.path.sep)[-2]
@@ -383,7 +381,7 @@ def main():
         var = (os.path.sep).join(full_path.split(
             os.path.sep)[0:-1]) + os.path.sep
         variable = var + folder_dir
-        last_dir = folder_dir.split('/')[-1]
+        last_dir = folder_dir.split('\\')[-1]
         folder_id = parents_id[last_dir]
         service.files().delete(fileId=folder_id).execute()
 
