@@ -13,10 +13,10 @@ So, it's two-way synchronization of selected folders, which you can run at any t
 
 1) Turn on Google Drive API [here] (if you have any troubles, check [Python Quickstart guide]).
 1) Get your .json client secret config file in [Google API Projects page] and put it in working directory (don't forget to save it as *client_secret.json*)
-1) In *upload_to_drive.py* and *download_from_drive.py* file scripts change global variables FULL_PATH and DIR_NAME to your's full folder path and folder's name, which you want to upload/download/synchronize, respectively.
+1) In **upload_to_drive.py** and **download_from_drive.py** file scripts change global variables FULL_PATH and DIR_NAME to your's full folder path and folder's name, which you want to upload/download/synchronize, respectively.
 1) How to use:
-  + *python upload_to_drive.py*: To apply changes made on local storage to specific Google Drive folder.
-  + *python download_from_drive.py*: To apply changes from Google Drive folder to your local storage.
+    - **python upload_to_drive.py**: To apply changes made on local storage to specific Google Drive folder.
+    - **python download_from_drive.py**: To apply changes from Google Drive folder to your local storage.
 1) First time you run *upload_to_drive.py* or *download_from_drive.py*, it will open browser/new tab, and you will need to authenticate the script (or if it doesn't redirect you, copy the link and do authentification manually).
 1) (Optional) put script that you need to cron or any other task planner that you use.
 1) Enjoy how simple it is!
