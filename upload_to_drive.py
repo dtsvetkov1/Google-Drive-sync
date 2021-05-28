@@ -75,7 +75,7 @@ def folder_upload(service):
 
     parents_id = {}
 
-    for root, _, files in os.walk(FULL_PATH, topdown=True):
+    for root, _, files in os.walk(FULL_PATH, topdown=True, followlinks=True):
         last_dir = root.split('/')[-1]
         pre_last_dir = root.split('/')[-2]
         if pre_last_dir not in parents_id.keys():
@@ -240,7 +240,7 @@ def main():
     root_len = len(full_path.split(os.path.sep)[0:-2])
 
     # Get list of folders three paths on computer
-    for root, dirs, files in os.walk(full_path, topdown=True):
+    for root, dirs, files in os.walk(full_path, topdown=True, followlinks=True):
         for name in dirs:
             var_path = (os.path.sep).join(
                 root.split(os.path.sep)[root_len + 1:])
