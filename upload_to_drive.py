@@ -76,6 +76,8 @@ def folder_upload(service):
     parents_id = {}
 
     for root, _, files in os.walk(FULL_PATH, topdown=True):
+        # This has problem on windows, recommend using os.path.sep as the windows
+        # uses "\\" (Escape character "\") as separator
         last_dir = root.split('/')[-1]
         pre_last_dir = root.split('/')[-2]
         if pre_last_dir not in parents_id.keys():
@@ -116,18 +118,22 @@ def check_upload(service):
 
     """
 
-    results = service.files().list(
-        pageSize=100,
-        q="'root' in parents and trashed != True and \
-        mimeType='application/vnd.google-apps.folder'").execute()
+    search_list = ['root']
+    found_names = []
+    is_found = False
 
-    items = results.get('files', [])
-
-    # Check if folder exists, and then create it or get this folder's id.
-    if DIR_NAME in [item['name'] for item in items]:
-        folder_id = [item['id']for item in items
-                     if item['name'] == DIR_NAME][0]
-    else:
+    for search_id in search_list:
+        results = service.files().list(pageSize=100,q="%r in parents and trashed != True and mimeType='application/vnd.google-apps.folder'" % search_id).execute()
+        items = results.get('files', [])
+        for item in items:
+            if [ord(c) for c in item['name']]==[ord(c) for c in DIR_NAME]:
+                is_found = True
+                folder_id = item['id']
+                break
+            else:
+                search_list.append(item['id'])    
+                found_names.append(item['name'])
+    if not is_found:
         parents_id = folder_upload(service)
         folder_id = parents_id[DIR_NAME]
 
